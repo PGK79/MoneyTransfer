@@ -1,14 +1,17 @@
 package ru.netology.moneytransferservice.models;
 
-import javax.validation.constraints.Positive;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.Objects;
 
 public class Amount {
-    @Positive
     private int value;
     private String currency;
 
-    public Amount(int value, String currency) {
+    @JsonCreator
+    public Amount(@JsonProperty("value")int value,
+                  @JsonProperty("currency")String currency) {
         this.value = value;
         this.currency = currency;
     }
