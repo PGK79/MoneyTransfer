@@ -24,7 +24,7 @@ public class TemporaryRepository {
         return true;
     }
 
-    public boolean putMoneyTheCard(String cardToNumber, Long transferAmount){
+    public boolean putMoneyTheCard(String cardToNumber, Long transferAmount) {
         validCards.put(cardToNumber, validCards.get(cardToNumber) + transferAmount);
         return true;
     }
