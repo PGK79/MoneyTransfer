@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 @Service
 public class TransferService {
-    TemporaryRepository temporaryRepository;
+    private final TemporaryRepository temporaryRepository;
 
     public TransferService(TemporaryRepository temporaryRepository) {
         this.temporaryRepository = temporaryRepository;
