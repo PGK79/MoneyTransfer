@@ -5,20 +5,19 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Objects;
 
-
 public class Transferer {
-    private String cardFromNumber;
-    private String cardFromValidTill;
-    private String cardFromCVV;
-    private String cardToNumber;
-    private Amount amount;
+    private final String cardFromNumber;
+    private final String cardFromValidTill;
+    private final String cardFromCVV;
+    private final String cardToNumber;
+    private final Amount amount;
 
     @JsonCreator
     public Transferer(@JsonProperty("cardFromNumber") String cardFromNumber,
-                      @JsonProperty("cardFromValidTill")String cardFromValidTill,
+                      @JsonProperty("cardFromValidTill") String cardFromValidTill,
                       @JsonProperty("cardFromCVV") String cardFromCVV,
                       @JsonProperty("cardToNumber") String cardToNumber,
-                      @JsonProperty("amount") Amount amount){
+                      @JsonProperty("amount") Amount amount) {
         this.cardFromNumber = cardFromNumber;
         this.cardFromValidTill = cardFromValidTill;
         this.cardFromCVV = cardFromCVV;
@@ -30,40 +29,12 @@ public class Transferer {
         return cardFromNumber;
     }
 
-    public void setCardFromNumber(String cardFromNumber) {
-        this.cardFromNumber = cardFromNumber;
-    }
-
-    public String getCardFromCVV() {
-        return cardFromCVV;
-    }
-
-    public void setCardFromCVV(String cardFromCVV) {
-        this.cardFromCVV = cardFromCVV;
-    }
-
-    public String getCardFromValidTill() {
-        return cardFromValidTill;
-    }
-
-    public void setCardFromValidTill(String cardFromValidTill) {
-        this.cardFromValidTill = cardFromValidTill;
-    }
-
     public String getCardToNumber() {
         return cardToNumber;
     }
 
-    public void setCardToNumber(String cardToNumber) {
-        this.cardToNumber = cardToNumber;
-    }
-
     public Amount getAmount() {
         return amount;
-    }
-
-    public void setAmount(Amount amount) {
-        this.amount = amount;
     }
 
     @Override

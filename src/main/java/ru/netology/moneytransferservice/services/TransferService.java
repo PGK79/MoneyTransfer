@@ -19,30 +19,26 @@ public class TransferService {
     public String executeTransfer(Transferer transferer) {
         String cardFromNumber = transferer.getCardFromNumber();
         String cardToNumber = transferer.getCardToNumber();
-        Long transferAmount;
-        Long cardFromBalace;
+        long transferAmount;
+        long cardFromBalance;
 
-        if (cardСhecker(cardFromNumber, cardToNumber)) {
-            cardFromBalace = temporaryRepository.getСardBalance(cardFromNumber);
-            transferAmount = (long) transferer.getAmount().getValue();
+        if (cardChecker(cardFromNumber, cardToNumber)) {
+            cardFromBalance = temporaryRepository.getCardBalance(cardFromNumber);
+            transferAmount = transferer.getAmount().getValue();
         } else throw new InputDataException("Error input data");
 
-        if (!compareBalanceWithTransfer(cardFromBalace, transferAmount)) {
+        if (!compareBalanceWithTransfer(cardFromBalance, transferAmount)) {
             throw new InputDataException("Error input data");
         }
         return transfer(cardFromNumber, cardToNumber, transferAmount);
     }
 
-    private boolean cardСhecker(String cardFrom, String cardTo) {
-        if (temporaryRepository.mapSearch(cardFrom) && temporaryRepository.mapSearch(cardTo)) {
-            return true;
-        } else return false;
+    private boolean cardChecker(String cardFrom, String cardTo) {
+        return temporaryRepository.mapSearch(cardFrom) && temporaryRepository.mapSearch(cardTo);
     }
 
     private boolean compareBalanceWithTransfer(long balance, long transferAmount) {
-        if (balance >= transferAmount) {
-            return true;
-        } else return false;
+        return balance >= transferAmount;
     }
 
     private String transfer(String cardFromNumber, String cardToNumber, long transferAmount) {

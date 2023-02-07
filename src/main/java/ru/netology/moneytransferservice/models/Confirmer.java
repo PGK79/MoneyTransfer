@@ -3,27 +3,11 @@ package ru.netology.moneytransferservice.models;
 import java.util.Objects;
 
 public class Confirmer {
-    private String operationId;
-    private transient String code;
+    private final String operationId;
+    private final transient String code;
 
     public Confirmer(String operationId, String code) {
         this.operationId = operationId;
-        this.code = code;
-    }
-
-    public String getOperationId() {
-        return operationId;
-    }
-
-    public void setOperationId(String operationId) {
-        this.operationId = operationId;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
         this.code = code;
     }
 

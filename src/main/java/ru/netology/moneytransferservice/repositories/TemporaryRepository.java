@@ -15,7 +15,7 @@ public class TemporaryRepository {
         return validCards.containsKey(cardNumber);
     }
 
-    public Long getСardBalance(String cardNumber) {
+    public long getCardBalance(String cardNumber) {
         return validCards.get(cardNumber);
     }
 
