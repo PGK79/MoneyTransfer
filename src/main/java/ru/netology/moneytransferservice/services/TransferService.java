@@ -25,8 +25,8 @@ public class TransferService {
             transferAmount = (long) transferer.getAmount().getValue();
         } else throw new IllegalArgumentException("Error input data");
 
-        if(!compareBalanceWithTransfer(cardFromBalace, transferAmount)) {
-            throw  new IllegalArgumentException("Error transfer");
+        if (!compareBalanceWithTransfer(cardFromBalace, transferAmount)) {
+            throw new IllegalArgumentException("Error input data");
         }
         return transfer(cardFromNumber, cardToNumber, transferAmount);
     }
@@ -49,6 +49,6 @@ public class TransferService {
                 && temporaryRepository.putMoneyTheCard(cardToNumber, transferAmount)) {
             counter.getAndIncrement();
             return String.valueOf(counter);
-        } else throw  new IllegalArgumentException("Error transfer");
+        } else throw new IllegalArgumentException("Error transfer");
     }
 }
