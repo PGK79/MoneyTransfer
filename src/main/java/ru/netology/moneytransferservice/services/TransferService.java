@@ -1,6 +1,8 @@
 package ru.netology.moneytransferservice.services;
 
 import org.springframework.stereotype.Service;
+import ru.netology.moneytransferservice.exceptions.InputDataException;
+import ru.netology.moneytransferservice.exceptions.TransferException;
 import ru.netology.moneytransferservice.models.Transferer;
 import ru.netology.moneytransferservice.repositories.TemporaryRepository;
 
@@ -23,10 +25,10 @@ public class TransferService {
         if (cardСhecker(cardFromNumber, cardToNumber)) {
             cardFromBalace = temporaryRepository.getСardBalance(cardFromNumber);
             transferAmount = (long) transferer.getAmount().getValue();
-        } else throw new IllegalArgumentException("Error input data");
+        } else throw new InputDataException("Error input data");
 
         if (!compareBalanceWithTransfer(cardFromBalace, transferAmount)) {
-            throw new IllegalArgumentException("Error input data");
+            throw new InputDataException("Error input data");
         }
         return transfer(cardFromNumber, cardToNumber, transferAmount);
     }
@@ -49,6 +51,6 @@ public class TransferService {
                 && temporaryRepository.putMoneyTheCard(cardToNumber, transferAmount)) {
             counter.getAndIncrement();
             return String.valueOf(counter);
-        } else throw new IllegalArgumentException("Error transfer");
+        } else throw new TransferException("Error transfer");
     }
 }
