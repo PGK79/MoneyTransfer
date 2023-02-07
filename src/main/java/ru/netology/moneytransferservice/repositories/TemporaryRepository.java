@@ -3,12 +3,13 @@ package ru.netology.moneytransferservice.repositories;
 import org.springframework.stereotype.Repository;
 
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Repository
 public class TemporaryRepository {
-    Map<String, Long> validCards = Map.of("1234_1234_1234_1234", 1000L
-            , "2345_2345_2345_2345", 10000L, "3456_3456_3456_3456", 100000L,
-            "1111_1111_1111_1111", 10L);
+    Map<String, Long> validCards = new ConcurrentHashMap<>(Map.of("1234123412341234", 1000L
+            , "2345234523452345", 10000L, "3456345634563456", 100000L,
+            "1111111111111111", 10L, "2222222222222222", 100L));
 
     public boolean mapSearch(String cardNumber) {
         return validCards.containsKey(cardNumber);
