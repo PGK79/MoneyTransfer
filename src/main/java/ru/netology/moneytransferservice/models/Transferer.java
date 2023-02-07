@@ -1,35 +1,27 @@
 package ru.netology.moneytransferservice.models;
 
-import javax.validation.constraints.*;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.Objects;
 
+
 public class Transferer {
-    @Size(min = 16)
-    @NotBlank
-    @Positive
     private String cardFromNumber;
-
-    @Positive
-    @Future
-    @Size(min = 4)
     private String cardFromValidTill;
-
-    @Positive
-    @NotBlank
-    @Size(min = 3)
     private String cardFromCVV;
-
-    @Size(min = 16)
-    @NotBlank
-    @Positive
     private String cardToNumber;
-
-    @NotNull
     private Amount amount;
 
-    public Transferer(String cardFromNumber, String cardFromValidTill, String cardToNumber, Amount amount) {
+    @JsonCreator
+    public Transferer(@JsonProperty("cardFromNumber") String cardFromNumber,
+                      @JsonProperty("cardFromValidTill")String cardFromValidTill,
+                      @JsonProperty("cardFromCVV") String cardFromCVV,
+                      @JsonProperty("cardToNumber") String cardToNumber,
+                      @JsonProperty("amount") Amount amount){
         this.cardFromNumber = cardFromNumber;
         this.cardFromValidTill = cardFromValidTill;
+        this.cardFromCVV = cardFromCVV;
         this.cardToNumber = cardToNumber;
         this.amount = amount;
     }
@@ -40,6 +32,14 @@ public class Transferer {
 
     public void setCardFromNumber(String cardFromNumber) {
         this.cardFromNumber = cardFromNumber;
+    }
+
+    public String getCardFromCVV() {
+        return cardFromCVV;
+    }
+
+    public void setCardFromCVV(String cardFromCVV) {
+        this.cardFromCVV = cardFromCVV;
     }
 
     public String getCardFromValidTill() {
@@ -71,12 +71,12 @@ public class Transferer {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Transferer that = (Transferer) o;
-        return Objects.equals(cardFromNumber, that.cardFromNumber) && Objects.equals(cardFromValidTill, that.cardFromValidTill) && Objects.equals(cardToNumber, that.cardToNumber) && Objects.equals(amount, that.amount);
+        return Objects.equals(cardFromNumber, that.cardFromNumber) && Objects.equals(cardFromValidTill, that.cardFromValidTill) && Objects.equals(cardFromCVV, that.cardFromCVV) && Objects.equals(cardToNumber, that.cardToNumber) && Objects.equals(amount, that.amount);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(cardFromNumber, cardFromValidTill, cardToNumber, amount);
+        return Objects.hash(cardFromNumber, cardFromValidTill, cardFromCVV, cardToNumber, amount);
     }
 
     @Override
@@ -84,6 +84,7 @@ public class Transferer {
         return "Transferer{" +
                 "cardFromNumber='" + cardFromNumber + '\'' +
                 ", cardFromValidTill='" + cardFromValidTill + '\'' +
+                ", cardFromCVV='" + cardFromCVV + '\'' +
                 ", cardToNumber='" + cardToNumber + '\'' +
                 ", amount=" + amount +
                 '}';
