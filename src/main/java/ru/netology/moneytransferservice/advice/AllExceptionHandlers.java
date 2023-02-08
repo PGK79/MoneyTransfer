@@ -8,6 +8,8 @@ import ru.netology.moneytransferservice.exceptions.InputDataException;
 import ru.netology.moneytransferservice.exceptions.TransferException;
 import ru.netology.moneytransferservice.models.ExceptionDto;
 
+import java.io.IOException;
+
 @RestControllerAdvice
 public class AllExceptionHandlers {
     @ExceptionHandler(InputDataException.class)
@@ -20,5 +22,10 @@ public class AllExceptionHandlers {
     public ResponseEntity<ExceptionDto> transferExceptionHandler(TransferException e) {
         return new ResponseEntity<>(new ExceptionDto(e.getMessage(), e.getId()),
                 HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(IOException.class)
+    public ResponseEntity<String> IOExceptionHandler(IOException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
