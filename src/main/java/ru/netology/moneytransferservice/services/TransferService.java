@@ -21,42 +21,43 @@ public class TransferService {
     public Confirmer executeTransfer(Transferer transferer) {
         String cardFromNumber = transferer.getCardFromNumber();
         String cardToNumber = transferer.getCardToNumber();
-        long transferAmount;
-        long cardFromBalance;
+        long transferAmount = transferer.getAmount().getValue();
 
-        if (cardChecker(cardFromNumber, cardToNumber)) {
-            cardFromBalance = temporaryRepository.getCardBalance(cardFromNumber);
-            transferAmount = transferer.getAmount().getValue();
-        } else {
-            throw new InputDataException("Проверьте правильность введения номеров карт (Error input data)",
-                    counter.getAndIncrement());
-       }
+        cardChecker(cardFromNumber, cardToNumber);
 
-        if (!compareBalanceWithTransfer(cardFromBalance, transferAmount)) {
-            throw new InputDataException("На карте нет достаточной суммы денег (Error input data)",
-                    counter.getAndIncrement());
-        }
-        if(transfer(cardFromNumber, cardToNumber, transferAmount)){
+        compareBalanceWithTransfer(temporaryRepository.getCardBalance(cardFromNumber),
+                transferAmount);
+
+        if (transfer(cardFromNumber, cardToNumber, transferAmount)) {
             return new Confirmer(String.valueOf(counter.getAndIncrement()),
                     transferer.getCardFromCVV());
-        }else {
-            counter.getAndIncrement();
+        } else {
             throw new TransferException("Операция перевода не может быть выполнена(Error transfer)",
-                    counter.get());
+                    counter.getAndIncrement());
         }
     }
 
     //TODO ЗАГЛУШКА
-    public Confirmer confirmOperation(Confirmer confirmer){
+    public Confirmer confirmOperation(Confirmer confirmer) {
         return new Confirmer(confirmer.getOperationId(), "0001");
     }
 
-    private boolean cardChecker(String cardFrom, String cardTo) {
-        return temporaryRepository.mapSearch(cardFrom) && temporaryRepository.mapSearch(cardTo);
+    private void cardChecker(String cardFrom, String cardTo) {
+        if (!temporaryRepository.mapSearch(cardFrom)) {
+            throw new InputDataException("Проверьте правильность введения номерa карты № 1"
+                    + "(Error input data)", counter.getAndIncrement());
+        } else if (!temporaryRepository.mapSearch(cardTo)) {
+            throw new InputDataException("Проверьте правильность введения номерa карты № 2"
+                    + "(Error input data)", counter.getAndIncrement());
+        }
+
     }
 
-    private boolean compareBalanceWithTransfer(long balance, long transferAmount) {
-        return balance >= transferAmount;
+    private void compareBalanceWithTransfer(long balance, long transferAmount) {
+        if (balance < transferAmount) {
+            throw new InputDataException("На карте нет достаточной суммы денег (Error input data)",
+                    counter.getAndIncrement());
+        }
     }
 
     private boolean transfer(String cardFromNumber, String cardToNumber, long transferAmount) {
