@@ -33,7 +33,6 @@ public class TransferService {
        }
 
         if (!compareBalanceWithTransfer(cardFromBalance, transferAmount)) {
-            counter.getAndIncrement();
             throw new InputDataException("На карте нет достаточной суммы денег (Error input data)",
                     counter.getAndIncrement());
         }
