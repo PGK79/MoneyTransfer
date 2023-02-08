@@ -1,18 +1,15 @@
 package ru.netology.moneytransferservice.controllers;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.netology.moneytransferservice.models.Confirmer;
 import ru.netology.moneytransferservice.models.Transferer;
 import ru.netology.moneytransferservice.services.TransferService;
 
-import javax.validation.Valid;
-
 @RestController
-@RequestMapping("/")
-
+@Slf4j
 public class TransferController {
     private final TransferService transferService;
 
@@ -20,17 +17,14 @@ public class TransferController {
         this.transferService = transferService;
     }
 
-    @PostMapping("transfer")
-
-    public String transferSender(@RequestBody Transferer transferer) {
-        System.out.println(transferer);
+   @PostMapping("/transfer")
+    public Confirmer transferSender(@RequestBody Transferer transferer) {
         return transferService.executeTransfer(transferer);
     }
 
-    //TODO реализовать
-    @PostMapping("confirmOperation")
-    public String transferSender(@Valid @RequestBody Confirmer confirmer) {
-        System.out.println(confirmer);
-        return "Confirm";
+    @PostMapping("/confirmOperation")
+    public Confirmer transferSender(@RequestBody Confirmer confirmer) {
+       System.out.println(confirmer);
+       return transferService.confirmOperation(confirmer);
     }
 }
