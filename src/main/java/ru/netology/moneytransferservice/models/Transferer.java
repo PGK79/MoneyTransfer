@@ -1,8 +1,5 @@
 package ru.netology.moneytransferservice.models;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.util.Objects;
 
 public class Transferer {
@@ -12,12 +9,8 @@ public class Transferer {
     private final String cardToNumber;
     private final Amount amount;
 
-    @JsonCreator
-    public Transferer(@JsonProperty("cardFromNumber") String cardFromNumber,
-                      @JsonProperty("cardFromValidTill") String cardFromValidTill,
-                      @JsonProperty("cardFromCVV") String cardFromCVV,
-                      @JsonProperty("cardToNumber") String cardToNumber,
-                      @JsonProperty("amount") Amount amount) {
+        public Transferer(String cardFromNumber, String cardFromValidTill, String cardFromCVV,
+                      String cardToNumber,Amount amount) {
         this.cardFromNumber = cardFromNumber;
         this.cardFromValidTill = cardFromValidTill;
         this.cardFromCVV = cardFromCVV;
@@ -35,6 +28,10 @@ public class Transferer {
 
     public Amount getAmount() {
         return amount;
+    }
+
+    public String getCardFromCVV() {
+        return cardFromCVV;
     }
 
     @Override
