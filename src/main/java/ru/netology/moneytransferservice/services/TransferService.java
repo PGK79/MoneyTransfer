@@ -3,20 +3,22 @@ package ru.netology.moneytransferservice.services;
 import org.springframework.stereotype.Service;
 import ru.netology.moneytransferservice.exceptions.InputDataException;
 import ru.netology.moneytransferservice.exceptions.TransferException;
+import ru.netology.moneytransferservice.models.Confirmer;
 import ru.netology.moneytransferservice.models.Transferer;
 import ru.netology.moneytransferservice.repositories.TemporaryRepository;
 
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 public class TransferService {
     private final TemporaryRepository temporaryRepository;
+    private AtomicInteger counter = new AtomicInteger(1);
 
     public TransferService(TemporaryRepository temporaryRepository) {
         this.temporaryRepository = temporaryRepository;
     }
 
-    public String executeTransfer(Transferer transferer) {
+    public Confirmer executeTransfer(Transferer transferer) {
         String cardFromNumber = transferer.getCardFromNumber();
         String cardToNumber = transferer.getCardToNumber();
         long transferAmount;
@@ -25,12 +27,29 @@ public class TransferService {
         if (cardChecker(cardFromNumber, cardToNumber)) {
             cardFromBalance = temporaryRepository.getCardBalance(cardFromNumber);
             transferAmount = transferer.getAmount().getValue();
-        } else throw new InputDataException("Error input data");
+        } else {
+            throw new InputDataException("Проверьте правильность введения номеров карт (Error input data)",
+                    counter.getAndIncrement());
+       }
 
         if (!compareBalanceWithTransfer(cardFromBalance, transferAmount)) {
-            throw new InputDataException("Error input data");
+            counter.getAndIncrement();
+            throw new InputDataException("На карте нет достаточной суммы денег (Error input data)",
+                    counter.getAndIncrement());
         }
-        return transfer(cardFromNumber, cardToNumber, transferAmount);
+        if(transfer(cardFromNumber, cardToNumber, transferAmount)){
+            return new Confirmer(String.valueOf(counter.getAndIncrement()),
+                    transferer.getCardFromCVV());
+        }else {
+            counter.getAndIncrement();
+            throw new TransferException("Операция перевода не может быть выполнена(Error transfer)",
+                    counter.get());
+        }
+    }
+
+    //TODO ЗАГЛУШКА
+    public Confirmer confirmOperation(Confirmer confirmer){
+        return new Confirmer(confirmer.getOperationId(), "0001");
     }
 
     private boolean cardChecker(String cardFrom, String cardTo) {
@@ -41,12 +60,8 @@ public class TransferService {
         return balance >= transferAmount;
     }
 
-    private String transfer(String cardFromNumber, String cardToNumber, long transferAmount) {
-        AtomicLong counter = new AtomicLong(1);
-        if (temporaryRepository.writeOffTheCard(cardFromNumber, transferAmount)
-                && temporaryRepository.putMoneyTheCard(cardToNumber, transferAmount)) {
-            counter.getAndIncrement();
-            return String.valueOf(counter);
-        } else throw new TransferException("Error transfer");
+    private boolean transfer(String cardFromNumber, String cardToNumber, long transferAmount) {
+        return temporaryRepository.writeOffTheCard(cardFromNumber, transferAmount)
+                && temporaryRepository.putMoneyTheCard(cardToNumber, transferAmount);
     }
 }
