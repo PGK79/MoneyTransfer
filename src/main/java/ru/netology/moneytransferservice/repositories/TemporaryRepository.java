@@ -9,7 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class TemporaryRepository {
     Map<String, Long> validCards = new ConcurrentHashMap<>(Map.of("1234123412341234", 1000L
             , "2345234523452345", 10000L, "3456345634563456", 100000L,
-            "1111111111111111", 10L, "2222222222222222", 100L));
+            "1111111111111111", 1000000L, "2222222222222222", 100L));
 
     public boolean mapSearch(String cardNumber) {
         return validCards.containsKey(cardNumber);
