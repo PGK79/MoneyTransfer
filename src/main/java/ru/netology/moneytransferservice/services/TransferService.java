@@ -1,10 +1,12 @@
 package ru.netology.moneytransferservice.services;
 
 import org.springframework.stereotype.Service;
+import ru.netology.moneytransferservice.exceptions.ConfirmationException;
 import ru.netology.moneytransferservice.exceptions.InputDataException;
 import ru.netology.moneytransferservice.exceptions.TransferException;
+import ru.netology.moneytransferservice.loggers.LoggerSimple;
 import ru.netology.moneytransferservice.models.Confirmer;
-import ru.netology.moneytransferservice.models.Logger;
+import ru.netology.moneytransferservice.models.OperationIdDto;
 import ru.netology.moneytransferservice.models.Transferer;
 import ru.netology.moneytransferservice.repositories.TemporaryRepository;
 
@@ -19,17 +21,17 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class TransferService {
     private final TemporaryRepository temporaryRepository;
     private AtomicInteger counter = new AtomicInteger(1);
-    private Logger logger;
+    private LoggerSimple loggerSimple;
 
     public TransferService(TemporaryRepository temporaryRepository) {
         this.temporaryRepository = temporaryRepository;
     }
 
-    public Confirmer executeTransfer(Transferer transferer) {
+    public OperationIdDto executeTransfer(Transferer transferer) {
         String cardFromNumber = transferer.getCardFromNumber();
         String cardToNumber = transferer.getCardToNumber();
         long transferAmount = transferer.getAmount().getValue();
-        logger = new Logger(cardFromNumber,cardToNumber, transferer.getAmount());
+        loggerSimple = new LoggerSimple(cardFromNumber, cardToNumber, transferer.getAmount());
 
         cardChecker(cardFromNumber, cardToNumber);
 
@@ -37,28 +39,37 @@ public class TransferService {
                 transferAmount);
 
         if (transfer(cardFromNumber, cardToNumber, transferAmount)) {
-            logFile(logger,"УСПЕШНО");
-            return new Confirmer(String.valueOf(counter.getAndIncrement()),
-                    transferer.getCardFromCVV());
+            logFile(loggerSimple, "УСПЕШНО");
+            temporaryRepository.saveTransfers(String.valueOf(counter.get()), "0000");
+            return new OperationIdDto(String.valueOf(counter.getAndIncrement()));
         } else {
-            logFile(logger,"Error transfer");
+            logFile(loggerSimple, "Error transfer");
             throw new TransferException("Операция перевода не может быть выполнена(Error transfer)",
                     counter.getAndIncrement());
         }
     }
 
-    //TODO ЗАГЛУШКА
-    public Confirmer confirmOperation(Confirmer confirmer) {
-        return new Confirmer(confirmer.getOperationId(), "0001");
+    public OperationIdDto confirmOperation(Confirmer confirmer) {
+        if(!temporaryRepository.checkForTransactionRecord()){
+            throw new ConfirmationException("Информация в репозитории не доступна",
+                    Integer.parseInt(confirmer.getOperationId()));
+        }
+        if (temporaryRepository.getTransferId(confirmer) &&
+                temporaryRepository.getVerificationCode(confirmer)) {
+            return new OperationIdDto(String.valueOf(confirmer.getOperationId()));
+        } else {
+            throw new InputDataException("ID операции не соотвествует проверочному коду",
+                    counter.get());
+        }
     }
 
     private void cardChecker(String cardFrom, String cardTo) {
         if (!temporaryRepository.mapSearch(cardFrom)) {
-            logFile(logger,"ОШИБКА (Неверный номер карты 1)");
+            logFile(loggerSimple, "ОШИБКА (Неверный номер карты 1)");
             throw new InputDataException("Проверьте правильность введения номерa карты № 1"
                     + "(Error input data)", counter.getAndIncrement());
         } else if (!temporaryRepository.mapSearch(cardTo)) {
-            logFile(logger,"ОШИБКА (Неверный номер карты 2)");
+            logFile(loggerSimple, "ОШИБКА (Неверный номер карты 2)");
             throw new InputDataException("Проверьте правильность введения номерa карты № 2"
                     + "(Error input data)", counter.getAndIncrement());
         }
@@ -66,7 +77,7 @@ public class TransferService {
 
     private void compareBalanceWithTransfer(long balance, long transferAmount) {
         if (balance < transferAmount) {
-            logFile(logger,"ОШИБКА (Недостаточно денег на карте)");
+            logFile(loggerSimple, "ОШИБКА (Недостаточно денег на карте)");
             throw new InputDataException("На карте нет достаточной суммы денег (Error input data)",
                     counter.getAndIncrement());
         }
@@ -77,16 +88,16 @@ public class TransferService {
                 && temporaryRepository.putMoneyTheCard(cardToNumber, transferAmount);
     }
 
-    public synchronized void logFile(Logger logger, String result ) {
+    public synchronized void logFile(LoggerSimple loggerSimple, String result) {
         SimpleDateFormat dateNow = new SimpleDateFormat("dd.MM.yyyy hh:mm:ss");
         String data = dateNow.format(new Date());
-        String log = "[" + data + "] " + "Карта списания: " + logger.getCardFromNumber()
-                + " Карта зачисления: " + logger.getCardToNumber() + " " + " Cумма: "
-                + logger.getAmount().getValue() + " "+ logger.getAmount().getCurrency()
-                + " Комиссия: " + logger.getAmount().getValue()/100 + " "
-                + logger.getAmount().getCurrency() + " Результат операции: " + result + "\n";
+        String log = "[" + data + "] " + "Карта списания: " + loggerSimple.getCardFromNumber()
+                + " Карта зачисления: " + loggerSimple.getCardToNumber() + " " + " Cумма: "
+                + loggerSimple.getAmount().getValue() + " " + loggerSimple.getAmount().getCurrency()
+                + " Комиссия: " + loggerSimple.getAmount().getValue() / 100 + " "
+                + loggerSimple.getAmount().getCurrency() + " Результат операции: " + result + "\n";
 
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter("logTransferFile.log",
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter("logs/logFile.log",
                 true))) {
             bw.write(log);
         } catch (IOException ex) {
