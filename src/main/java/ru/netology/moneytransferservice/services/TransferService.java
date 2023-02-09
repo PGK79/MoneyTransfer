@@ -35,7 +35,7 @@ public class TransferService {
 
         if (transfer(cardFromNumber, cardToNumber, transferAmount)) {
             loggerSimple.logFile(loggerSimple, "УСПЕШНО");
-            if(!temporaryRepository.saveTransfers(String.valueOf(counter.get()), "0000")){
+            if (!temporaryRepository.saveTransfers(String.valueOf(counter.get()), "0000")) {
                 loggerSimple.logFile(loggerSimple, "Error saveTransferToRepo");
             }
             return new OperationIdDto(String.valueOf(counter.getAndIncrement()));
@@ -47,7 +47,7 @@ public class TransferService {
     }
 
     public OperationIdDto confirmOperation(Confirmer confirmer) {
-        if(!temporaryRepository.checkForTransactionRecord()){
+        if (!temporaryRepository.checkForTransactionRecord()) {
             loggerSimple.logFile(loggerSimple, "ОШИБКА. Информация в репозитории не доступна");
             throw new ConfirmationException("Информация в репозитории не доступна",
                     Integer.parseInt(confirmer.getOperationId()));
@@ -65,7 +65,7 @@ public class TransferService {
 
     private void cardChecker(String cardFrom, String cardTo) {
         if (temporaryRepository.mapSearch(cardFrom)) {
-           loggerSimple.logFile(loggerSimple, "ОШИБКА (Неверный номер карты 1)");
+            loggerSimple.logFile(loggerSimple, "ОШИБКА (Неверный номер карты 1)");
             throw new InputDataException("Проверьте правильность введения номерa карты № 1"
                     + "(Error input data)", counter.getAndIncrement());
         } else if (temporaryRepository.mapSearch(cardTo)) {
@@ -77,7 +77,7 @@ public class TransferService {
 
     private void compareBalanceWithTransfer(long balance, long transferAmount) {
         if (balance < transferAmount) {
-           loggerSimple.logFile(loggerSimple, "ОШИБКА (Недостаточно денег на карте)");
+            loggerSimple.logFile(loggerSimple, "ОШИБКА (Недостаточно денег на карте)");
             throw new InputDataException("На карте нет достаточной суммы денег (Error input data)",
                     counter.getAndIncrement());
         }
@@ -87,6 +87,4 @@ public class TransferService {
         return temporaryRepository.writeOffTheCard(cardFromNumber, transferAmount)
                 && temporaryRepository.putMoneyTheCard(cardToNumber, transferAmount);
     }
-
-
 }
