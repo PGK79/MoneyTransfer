@@ -1,21 +1,29 @@
 package ru.netology.moneytransferservice.loggers;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import ru.netology.moneytransferservice.models.Amount;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Data
-@AllArgsConstructor
 public class LoggerSimple {
     private String cardFromNumber;
     private String cardToNumber;
     private Amount amount;
+
+    public LoggerSimple(String cardFromNumber, String cardToNumber, Amount amount) {
+        this.cardFromNumber = cardFromNumber;
+        this.cardToNumber = cardToNumber;
+        this.amount = amount;
+
+        File dirLog = new File("logs");
+        dirLog.mkdir();
+    }
 
     public synchronized void logFile(LoggerSimple loggerSimple, String result) {
         SimpleDateFormat dateNow = new SimpleDateFormat("dd.MM.yyyy hh:mm:ss");
