@@ -6,6 +6,6 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class Confirmer {
-    private  String operationId;
-    private  String code;
+    private String operationId;
+    private String code;
 }

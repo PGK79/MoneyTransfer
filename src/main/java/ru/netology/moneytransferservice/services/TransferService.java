@@ -26,6 +26,7 @@ public class TransferService {
         String cardFromNumber = transferer.getCardFromNumber();
         String cardToNumber = transferer.getCardToNumber();
         long transferAmount = transferer.getAmount().getValue();
+
         loggerSimple = new LoggerSimple(cardFromNumber, cardToNumber, transferer.getAmount());
 
         cardChecker(cardFromNumber, cardToNumber);
@@ -57,7 +58,7 @@ public class TransferService {
             loggerSimple.logFile(loggerSimple, "Проверка кода завершена успешно");
             return new OperationIdDto(String.valueOf(confirmer.getOperationId()));
         } else {
-            loggerSimple.logFile(loggerSimple, "ОШИБКА. ID операции не соответствует проверочному коду");
+            loggerSimple.logFile(loggerSimple, "ОШИБКА. ID не соответствует проверочному коду");
             throw new InputDataException("ID операции не соответствует проверочному коду",
                     counter.get());
         }

@@ -1,4 +1,5 @@
 package ru.netology.moneytransferservice.models;
+
 import lombok.Data;
 
 @Data

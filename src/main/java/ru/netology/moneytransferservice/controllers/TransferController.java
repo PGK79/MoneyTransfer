@@ -1,8 +1,6 @@
 package ru.netology.moneytransferservice.controllers;
 
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.netology.moneytransferservice.models.Confirmer;
 import ru.netology.moneytransferservice.models.OperationIdDto;
 import ru.netology.moneytransferservice.models.Transferer;
@@ -23,7 +21,6 @@ public class TransferController {
 
     @PostMapping("/confirmOperation")
     public OperationIdDto transferSender(@RequestBody Confirmer confirmer) {
-       System.out.println(confirmer);
        return transferService.confirmOperation(confirmer);
     }
 }
