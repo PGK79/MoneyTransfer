@@ -45,7 +45,7 @@ public class TemporaryRepository {
         return transfers.get(confirmer.getOperationId()).equals(confirmer.getCode());
     }
 
-    public boolean checkForTransactionRecord(){
+    public boolean checkForTransactionRecord() {
         return transfers.isEmpty();
     }
 }
