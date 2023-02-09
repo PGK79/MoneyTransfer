@@ -19,7 +19,9 @@ public class TemporaryRepository {
     }
 
     public long getCardBalance(String cardNumber) {
+        if(mapSearch(cardNumber)){
         return validCards.get(cardNumber);
+        }else return 0;
     }
 
     public boolean writeOffTheCard(String cardFromNumber, Long transferAmount) {
