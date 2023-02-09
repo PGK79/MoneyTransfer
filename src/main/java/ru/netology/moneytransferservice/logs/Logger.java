@@ -1,7 +1,8 @@
-package ru.netology.moneytransferservice.models;
+package ru.netology.moneytransferservice.logs;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import ru.netology.moneytransferservice.models.Amount;
 
 @Data
 @AllArgsConstructor
