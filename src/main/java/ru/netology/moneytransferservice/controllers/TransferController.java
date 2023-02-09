@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import ru.netology.moneytransferservice.models.Confirmer;
+import ru.netology.moneytransferservice.models.OperationIdDto;
 import ru.netology.moneytransferservice.models.Transferer;
 import ru.netology.moneytransferservice.services.TransferService;
 
@@ -16,12 +17,12 @@ public class TransferController {
     }
 
    @PostMapping("/transfer")
-    public Confirmer transferSender(@RequestBody Transferer transferer) {
+    public OperationIdDto transferSender(@RequestBody Transferer transferer) {
         return transferService.executeTransfer(transferer);
     }
 
     @PostMapping("/confirmOperation")
-    public Confirmer transferSender(@RequestBody Confirmer confirmer) {
+    public OperationIdDto transferSender(@RequestBody Confirmer confirmer) {
        System.out.println(confirmer);
        return transferService.confirmOperation(confirmer);
     }
