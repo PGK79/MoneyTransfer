@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.netology.moneytransferservice.exceptions.ConfirmationException;
 import ru.netology.moneytransferservice.exceptions.InputDataException;
+import ru.netology.moneytransferservice.exceptions.RepositoryException;
 import ru.netology.moneytransferservice.exceptions.TransferException;
 import ru.netology.moneytransferservice.models.ExceptionDto;
 
@@ -27,6 +28,11 @@ public class AllExceptionHandlers {
 
     @ExceptionHandler(ConfirmationException.class)
     public ResponseEntity<String> ConfirmationExceptionHandler(ConfirmationException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(RepositoryException.class)
+    public ResponseEntity<String> RepositoryExceptionHandler(RepositoryException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
