@@ -40,4 +40,18 @@ public class AllExceptionHandlers {
     public ResponseEntity<String> IOExceptionHandler(IOException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    @ExceptionHandler(UnsupportedOperationException.class)
+    public ResponseEntity<String> UnsupportedOperationExceptionHandler(UnsupportedOperationException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+    @ExceptionHandler(ClassCastException.class)
+    public ResponseEntity<String> ClassCastExceptionHandler(ClassCastException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+    @ExceptionHandler(NullPointerException.class)
+    public ResponseEntity<String> NullPointerExceptionHandler(NullPointerException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
 }
