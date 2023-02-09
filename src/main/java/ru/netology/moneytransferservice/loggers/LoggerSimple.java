@@ -25,14 +25,13 @@ public class LoggerSimple {
         dirLog.mkdir();
     }
 
-    public synchronized void logFile(LoggerSimple loggerSimple, String result) {
+    public synchronized void logFile(String result) {
         SimpleDateFormat dateNow = new SimpleDateFormat("dd.MM.yyyy hh:mm:ss");
         String data = dateNow.format(new Date());
-        String log = "[" + data + "] " + "Карта списания: " + loggerSimple.getCardFromNumber()
-                + " Карта зачисления: " + loggerSimple.getCardToNumber() + " " + " Cумма: "
-                + loggerSimple.getAmount().getValue() + " " + loggerSimple.getAmount().getCurrency()
-                + " Комиссия: " + loggerSimple.getAmount().getValue() / 100 + " "
-                + loggerSimple.getAmount().getCurrency() + " Результат операции: " + result + "\n";
+        String log = "[" + data + "] " + "Карта списания: " + cardFromNumber + " Карта зачисления: "
+                + cardToNumber+ " " + " Cумма: " + amount.getValue() + " " + amount.getCurrency()
+                + " Комиссия: " + amount.getValue() / 100 + " " + amount.getCurrency()
+                + " Результат операции: " + result + "\n";
 
         try (BufferedWriter bw = new BufferedWriter(new FileWriter("logs/logFile.log",
                 true))) {
