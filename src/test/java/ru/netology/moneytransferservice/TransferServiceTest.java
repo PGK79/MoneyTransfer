@@ -120,8 +120,10 @@ public class TransferServiceTest {
     @Test
     public void testConfirmOperationException() {
         Confirmer confirmer = new Confirmer("1", "0000");
+
         Mockito.when(temporaryRepository.checkForTransactionRecord())
                 .thenReturn(true);
+
         Assertions.assertThrows(ConfirmationException.class, () -> sut.confirmOperation(confirmer));
     }
 
@@ -129,12 +131,14 @@ public class TransferServiceTest {
     public void testConfirmOperation() {
         // given:
         Confirmer confirmer = new Confirmer("1", "0000");
+
         Mockito.when(temporaryRepository.checkForTransactionRecord())
                 .thenReturn(false);
         Mockito.when(temporaryRepository.getTransferId(confirmer))
                 .thenReturn(true);
         Mockito.when(temporaryRepository.getVerificationCode(confirmer))
                 .thenReturn(true);
+
         OperationIdDto expected = new OperationIdDto("1");
 
         // when:
@@ -150,8 +154,8 @@ public class TransferServiceTest {
         String cardFromNumber = "5555554444443333";
         String cardToNumber = "2222222222222222";
         Amount amount = new Amount(100L,"RUR");
-
         LoggerSimple loggerSimple = new LoggerSimple(cardFromNumber, cardToNumber, amount);
+
         Mockito.when(temporaryRepository.mapSearch(cardFromNumber))
                 .thenReturn(false);
 
@@ -168,7 +172,6 @@ public class TransferServiceTest {
 
         Mockito.when(temporaryRepository.mapSearch(cardFromNumber))
                 .thenReturn(true);
-
         Mockito.when(temporaryRepository.mapSearch(cardToNumber))
                 .thenReturn(false);
 
@@ -184,6 +187,7 @@ public class TransferServiceTest {
         long transferAmount = 10000L;
         long balance = 100L;
         LoggerSimple loggerSimple = new LoggerSimple(cardFromNumber, cardToNumber, amount);
+
         Mockito.when(temporaryRepository.getCardBalance(cardFromNumber))
                 .thenReturn(10000000L);
 
@@ -197,10 +201,12 @@ public class TransferServiceTest {
         String cardFromNumber = "1111111111111111";
         String cardToNumber = "2222222222222222";
         long transferAmount = 100L;
+
         Mockito.when(temporaryRepository.writeOffTheCard(cardFromNumber, transferAmount))
                 .thenReturn(true);
         Mockito.when(temporaryRepository.putMoneyTheCard(cardToNumber, transferAmount))
                 .thenReturn(true);
+
         final boolean expected = true;
 
         // when:
