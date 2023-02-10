@@ -2,9 +2,15 @@ package ru.netology.moneytransferservice;
 
 import org.junit.jupiter.api.*;
 import org.mockito.Mockito;
+import ru.netology.moneytransferservice.exceptions.ConfirmationException;
 import ru.netology.moneytransferservice.exceptions.InputDataException;
+import ru.netology.moneytransferservice.exceptions.RepositoryException;
+import ru.netology.moneytransferservice.exceptions.TransferException;
 import ru.netology.moneytransferservice.loggers.LoggerSimple;
 import ru.netology.moneytransferservice.models.Amount;
+import ru.netology.moneytransferservice.models.Confirmer;
+import ru.netology.moneytransferservice.models.OperationIdDto;
+import ru.netology.moneytransferservice.models.Transferer;
 import ru.netology.moneytransferservice.repositories.TemporaryRepository;
 import ru.netology.moneytransferservice.services.TransferService;
 
@@ -35,6 +41,142 @@ public class TransferServiceTest {
     }
 
     @Test
+    public void testExecuteTransfer() {
+        // given:
+        String cardFromNumber = "1111111111111111";
+        String cardToNumber = "2222222222222222";
+        long transferAmount = 100L;
+        Transferer transferer = new Transferer(cardFromNumber,"1025","123",
+                cardToNumber,new Amount(transferAmount, "RUR"));
+
+        Mockito.when(temporaryRepository.getCardBalance(cardFromNumber))
+                .thenReturn(10000000L);
+        Mockito.when(temporaryRepository.mapSearch(cardFromNumber))
+                .thenReturn(true);
+        Mockito.when(temporaryRepository.mapSearch(cardToNumber))
+                .thenReturn(true);
+        Mockito.when(temporaryRepository.saveTransfers("1", "0000"))
+                .thenReturn(true);
+        Mockito.when(temporaryRepository.writeOffTheCard(cardFromNumber, transferAmount))
+                .thenReturn(true);
+        Mockito.when(temporaryRepository.putMoneyTheCard(cardToNumber, transferAmount))
+                .thenReturn(true);
+
+        final OperationIdDto expected = new OperationIdDto("1");
+
+        // when:
+        OperationIdDto actual = sut.executeTransfer(transferer);
+
+        // then:
+        Assertions.assertEquals(expected, actual);
+    }
+    @Test
+    public void testExecuteTransferRepositoryException() {
+        String cardFromNumber = "1111111111111111";
+        String cardToNumber = "2222222222222222";
+        long transferAmount = 100L;
+        Transferer transferer = new Transferer(cardFromNumber,"1025","123",
+                cardToNumber,new Amount(transferAmount, "RUR"));
+
+        Mockito.when(temporaryRepository.getCardBalance(cardFromNumber))
+                .thenReturn(10000000L);
+        Mockito.when(temporaryRepository.mapSearch(cardFromNumber))
+                .thenReturn(true);
+        Mockito.when(temporaryRepository.mapSearch(cardToNumber))
+                .thenReturn(true);
+        Mockito.when(temporaryRepository.saveTransfers("1", "0000"))
+                .thenReturn(false);
+        Mockito.when(temporaryRepository.writeOffTheCard(cardFromNumber, transferAmount))
+                .thenReturn(true);
+        Mockito.when(temporaryRepository.putMoneyTheCard(cardToNumber, transferAmount))
+                .thenReturn(true);
+
+        Assertions.assertThrows(RepositoryException.class, () -> sut.executeTransfer(transferer));
+    }
+    @Test
+    public void testExecuteTransferTransferException() {
+        String cardFromNumber = "1111111111111111";
+        String cardToNumber = "2222222222222222";
+        long transferAmount = 100L;
+        Transferer transferer = new Transferer(cardFromNumber,"1025","123",
+                cardToNumber,new Amount(transferAmount, "RUR"));
+
+        Mockito.when(temporaryRepository.getCardBalance(cardFromNumber))
+                .thenReturn(10000000L);
+        Mockito.when(temporaryRepository.mapSearch(cardFromNumber))
+                .thenReturn(true);
+        Mockito.when(temporaryRepository.mapSearch(cardToNumber))
+                .thenReturn(true);
+        Mockito.when(temporaryRepository.saveTransfers("1", "0000"))
+                .thenReturn(true);
+        Mockito.when(temporaryRepository.writeOffTheCard(cardFromNumber, transferAmount))
+                .thenReturn(false);
+        Mockito.when(temporaryRepository.putMoneyTheCard(cardToNumber, transferAmount))
+                .thenReturn(true);
+
+        Assertions.assertThrows(TransferException.class, () -> sut.executeTransfer(transferer));
+    }
+
+    @Test
+    public void testConfirmOperationException() {
+        Confirmer confirmer = new Confirmer("1", "0000");
+        Mockito.when(temporaryRepository.checkForTransactionRecord())
+                .thenReturn(true);
+        Assertions.assertThrows(ConfirmationException.class, () -> sut.confirmOperation(confirmer));
+    }
+
+    @Test
+    public void testConfirmOperation() {
+        // given:
+        Confirmer confirmer = new Confirmer("1", "0000");
+        Mockito.when(temporaryRepository.checkForTransactionRecord())
+                .thenReturn(false);
+        Mockito.when(temporaryRepository.getTransferId(confirmer))
+                .thenReturn(true);
+        Mockito.when(temporaryRepository.getVerificationCode(confirmer))
+                .thenReturn(true);
+        OperationIdDto expected = new OperationIdDto("1");
+
+        // when:
+        OperationIdDto actual = sut.confirmOperation(confirmer);
+
+        // then:
+        Assertions.assertEquals(expected, actual);
+    }
+
+
+    @Test
+    public void testCardCheckerInvalidCardNumberOne() {
+        String cardFromNumber = "5555554444443333";
+        String cardToNumber = "2222222222222222";
+        Amount amount = new Amount(100L,"RUR");
+
+        LoggerSimple loggerSimple = new LoggerSimple(cardFromNumber, cardToNumber, amount);
+        Mockito.when(temporaryRepository.mapSearch(cardFromNumber))
+                .thenReturn(false);
+
+        Assertions.assertThrows(InputDataException.class, () -> sut.cardChecker(cardFromNumber,
+                cardToNumber, loggerSimple));
+    }
+
+    @Test
+    public void testCardCheckerInvalidCardNumberTwo() {
+        String cardFromNumber = "2222222222222222";
+        String cardToNumber = "5555554444443333";
+        Amount amount = new Amount(100L,"RUR");
+        LoggerSimple loggerSimple = new LoggerSimple(cardFromNumber, cardToNumber, amount);
+
+        Mockito.when(temporaryRepository.mapSearch(cardFromNumber))
+                .thenReturn(true);
+
+        Mockito.when(temporaryRepository.mapSearch(cardToNumber))
+                .thenReturn(false);
+
+        Assertions.assertThrows(InputDataException.class, () -> sut.cardChecker(cardFromNumber,
+                cardToNumber, loggerSimple));
+    }
+
+    @Test
     public void testCompareBalanceWithTransferException() throws InputDataException{
         String cardFromNumber = "1111111111111111";
         String cardToNumber = "2222222222222222";
@@ -45,9 +187,8 @@ public class TransferServiceTest {
         Mockito.when(temporaryRepository.getCardBalance(cardFromNumber))
                 .thenReturn(10000000L);
 
-        Assertions.assertThrows(InputDataException.class, () -> {
-            sut.compareBalanceWithTransfer(balance, transferAmount, loggerSimple);
-        });
+        Assertions.assertThrows(InputDataException.class, () -> sut.compareBalanceWithTransfer(balance,
+                transferAmount, loggerSimple));
     }
 
     @Test
