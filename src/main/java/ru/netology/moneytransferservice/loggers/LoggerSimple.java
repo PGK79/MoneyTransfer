@@ -15,6 +15,7 @@ public class LoggerSimple {
     private String cardFromNumber;
     private String cardToNumber;
     private Amount amount;
+    private int operationId;
 
     public LoggerSimple(String cardFromNumber, String cardToNumber, Amount amount) {
         this.cardFromNumber = cardFromNumber;
@@ -29,7 +30,7 @@ public class LoggerSimple {
         SimpleDateFormat dateNow = new SimpleDateFormat("dd.MM.yyyy hh:mm:ss");
         String data = dateNow.format(new Date());
         String log = "[" + data + "] " + "Карта списания: " + cardFromNumber + " Карта зачисления: "
-                + cardToNumber+ " " + " Cумма: " + amount.getValue() + " " + amount.getCurrency()
+                + cardToNumber + " " + " Cумма: " + amount.getValue() + " " + amount.getCurrency()
                 + " Комиссия: " + amount.getValue() / 100 + " " + amount.getCurrency()
                 + " Результат операции: " + result + "\n";
 
