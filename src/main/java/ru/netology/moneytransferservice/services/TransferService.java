@@ -3,6 +3,7 @@ package ru.netology.moneytransferservice.services;
 import org.springframework.stereotype.Service;
 import ru.netology.moneytransferservice.exceptions.ConfirmationException;
 import ru.netology.moneytransferservice.exceptions.InputDataException;
+import ru.netology.moneytransferservice.exceptions.RepositoryException;
 import ru.netology.moneytransferservice.exceptions.TransferException;
 import ru.netology.moneytransferservice.loggers.LoggerSimple;
 import ru.netology.moneytransferservice.models.Confirmer;
@@ -29,62 +30,55 @@ public class TransferService {
 
         loggerSimple = new LoggerSimple(cardFromNumber, cardToNumber, transferer.getAmount());
 
-        cardChecker(cardFromNumber, cardToNumber);
+        cardChecker(cardFromNumber, cardToNumber, loggerSimple);
 
         compareBalanceWithTransfer(temporaryRepository.getCardBalance(cardFromNumber),
-                transferAmount);
+                transferAmount, loggerSimple);
 
         if (transfer(cardFromNumber, cardToNumber, transferAmount)) {
-            loggerSimple.logFile(loggerSimple, "УСПЕШНО");
+            loggerSimple.logFile("УСПЕШНО");
             if (!temporaryRepository.saveTransfers(String.valueOf(counter.get()), "0000")) {
-                loggerSimple.logFile(loggerSimple, "Error saveTransferToRepo");
+                throw new RepositoryException("Error saveTransferToRepo", counter.get(), loggerSimple);
             }
             return new OperationIdDto(String.valueOf(counter.getAndIncrement()));
         } else {
-            loggerSimple.logFile(loggerSimple, "Error transfer");
-            throw new TransferException("Операция перевода не может быть выполнена(Error transfer)",
-                    counter.getAndIncrement());
+            throw new TransferException("Операция перевода не может быть выполнена",
+                    counter.getAndIncrement(), loggerSimple);
         }
     }
 
     public OperationIdDto confirmOperation(Confirmer confirmer) {
         if (temporaryRepository.checkForTransactionRecord()) {
-            loggerSimple.logFile(loggerSimple, "ОШИБКА. Информация в репозитории не доступна");
             throw new ConfirmationException("Информация в репозитории не доступна",
-                    Integer.parseInt(confirmer.getOperationId()));
+                    Integer.parseInt(confirmer.getOperationId()), loggerSimple);
         }
         if (temporaryRepository.getTransferId(confirmer) &&
                 temporaryRepository.getVerificationCode(confirmer)) {
-            loggerSimple.logFile(loggerSimple, "Проверка кода завершена успешно");
             return new OperationIdDto(String.valueOf(confirmer.getOperationId()));
         } else {
-            loggerSimple.logFile(loggerSimple, "ОШИБКА. ID не соответствует проверочному коду");
             throw new InputDataException("ID операции не соответствует проверочному коду",
-                    counter.get());
+                    counter.get(), loggerSimple);
         }
     }
 
-    private void cardChecker(String cardFrom, String cardTo) {
+    public void cardChecker(String cardFrom, String cardTo, LoggerSimple loggerSimple) {
         if (!temporaryRepository.mapSearch(cardFrom)) {
-            loggerSimple.logFile(loggerSimple, "ОШИБКА (Неверный номер карты 1)");
-            throw new InputDataException("Проверьте правильность введения номерa карты № 1"
-                    + "(Error input data)", counter.getAndIncrement());
+            throw new InputDataException("ОШИБКА (Неверный номер карты 1)", counter.getAndIncrement(),
+                    loggerSimple);
         } else if (!temporaryRepository.mapSearch(cardTo)) {
-            loggerSimple.logFile(loggerSimple, "ОШИБКА (Неверный номер карты 2)");
-            throw new InputDataException("Проверьте правильность введения номерa карты № 2"
-                    + "(Error input data)", counter.getAndIncrement());
+            throw new InputDataException("ОШИБКА (Неверный номер карты 2)",
+                    counter.getAndIncrement(), loggerSimple);
         }
     }
 
-    private void compareBalanceWithTransfer(long balance, long transferAmount) {
+    public void compareBalanceWithTransfer(long balance, long transferAmount, LoggerSimple loggerSimple) {
         if (balance < transferAmount) {
-            loggerSimple.logFile(loggerSimple, "ОШИБКА (Недостаточно денег на карте)");
-            throw new InputDataException("На карте нет достаточной суммы денег (Error input data)",
-                    counter.getAndIncrement());
+            throw new InputDataException("На карте нет достаточной суммы денег",
+                    counter.getAndIncrement(), loggerSimple);
         }
     }
 
-    private boolean transfer(String cardFromNumber, String cardToNumber, long transferAmount) {
+    public boolean transfer(String cardFromNumber, String cardToNumber, long transferAmount) {
         return temporaryRepository.writeOffTheCard(cardFromNumber, transferAmount)
                 && temporaryRepository.putMoneyTheCard(cardToNumber, transferAmount);
     }
