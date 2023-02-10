@@ -10,48 +10,31 @@ import ru.netology.moneytransferservice.exceptions.RepositoryException;
 import ru.netology.moneytransferservice.exceptions.TransferException;
 import ru.netology.moneytransferservice.models.ExceptionDto;
 
-import java.io.IOException;
-
 @RestControllerAdvice
 public class AllExceptionHandlers {
     @ExceptionHandler(InputDataException.class)
     public ResponseEntity<ExceptionDto> inputDataExceptionHandler(InputDataException e) {
+        e.getLoggerSimple().logFile(e.getMessage());
         return new ResponseEntity<>(new ExceptionDto(e.getMessage(), e.getId()),
                 HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(TransferException.class)
     public ResponseEntity<ExceptionDto> transferExceptionHandler(TransferException e) {
+        e.getLogger().logFile(e.getMessage());
         return new ResponseEntity<>(new ExceptionDto(e.getMessage(), e.getId()),
                 HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(ConfirmationException.class)
     public ResponseEntity<String> ConfirmationExceptionHandler(ConfirmationException e) {
+        e.getLoggerSimple().logFile(e.getMessage());
         return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(RepositoryException.class)
     public ResponseEntity<String> RepositoryExceptionHandler(RepositoryException e) {
+        e.getLoggerSimple().logFile(e.getMessage());
         return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
-
-    @ExceptionHandler(IOException.class)
-    public ResponseEntity<String> IOExceptionHandler(IOException e) {
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
-    @ExceptionHandler(UnsupportedOperationException.class)
-    public ResponseEntity<String> UnsupportedOperationExceptionHandler(UnsupportedOperationException e) {
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-    @ExceptionHandler(ClassCastException.class)
-    public ResponseEntity<String> ClassCastExceptionHandler(ClassCastException e) {
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-    @ExceptionHandler(NullPointerException.class)
-    public ResponseEntity<String> NullPointerExceptionHandler(NullPointerException e) {
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
 }
