@@ -13,7 +13,8 @@ public class WebConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("https://serp-ya.github.io");
+                        .allowedOrigins("https://serp-ya.github.io")
+                        .allowedOrigins("http://localhost:3000");
             }
         };
     }
