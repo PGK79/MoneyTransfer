@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+  backend:
+    image: 'transferbackend:1.0'
+    build: "./"
+    ports:
+      - "5500:8080"
+  frontend:
+    image: 'transferfrontend:1.0'
+    build: "./"
+    ports:
+      - "3000:3000"
