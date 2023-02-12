@@ -46,8 +46,8 @@ public class TransferServiceTest {
         String cardFromNumber = "1111111111111111";
         String cardToNumber = "2222222222222222";
         long transferAmount = 100L;
-        Transferer transferer = new Transferer(cardFromNumber,"1025","123",
-                cardToNumber,new Amount(transferAmount, "RUR"));
+        Transferer transferer = new Transferer(cardFromNumber, "1025", "123",
+                cardToNumber, new Amount(transferAmount, "RUR"));
 
         Mockito.when(temporaryRepository.getCardBalance(cardFromNumber))
                 .thenReturn(10000000L);
