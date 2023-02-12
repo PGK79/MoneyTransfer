@@ -5,7 +5,7 @@ services:
     image: 'transferbackend:1.0'
     build: "./"
     ports:
-      - "5500:8080"
+      - "5500:5500"
   frontend:
     image: 'transferfrontend:1.0'
     build: "./"
