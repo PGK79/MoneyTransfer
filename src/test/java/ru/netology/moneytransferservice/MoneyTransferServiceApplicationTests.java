@@ -21,11 +21,6 @@ class MoneyTransferServiceApplicationTests {
     private TestRestTemplate restTemplate;
 
     @Container
-    private static final GenericContainer<?> frontendApp =
-            new GenericContainer<>("transferfrontend:1.0")
-                    .withExposedPorts(3000);
-
-    @Container
     private static final GenericContainer<?> backendApp =
             new GenericContainer<>("transferbackend:1.0")
                     .withExposedPorts(5500);
