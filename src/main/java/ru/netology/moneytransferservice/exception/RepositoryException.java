@@ -1,8 +1,8 @@
-package ru.netology.moneytransferservice.exceptions;
+package ru.netology.moneytransferservice.exception;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import ru.netology.moneytransferservice.loggers.LoggerSimple;
+import ru.netology.moneytransferservice.logger.LoggerSimple;
 
 @EqualsAndHashCode(callSuper = true)
 @Data

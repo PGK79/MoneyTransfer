@@ -1,7 +1,7 @@
-package ru.netology.moneytransferservice.repositories;
+package ru.netology.moneytransferservice.repository;
 
 import org.springframework.stereotype.Repository;
-import ru.netology.moneytransferservice.models.Confirmer;
+import ru.netology.moneytransferservice.model.Confirmer;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

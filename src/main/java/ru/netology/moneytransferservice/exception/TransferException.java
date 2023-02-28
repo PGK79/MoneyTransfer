@@ -1,7 +1,7 @@
-package ru.netology.moneytransferservice.exceptions;
+package ru.netology.moneytransferservice.exception;
 
 import lombok.Data;
-import ru.netology.moneytransferservice.loggers.LoggerSimple;
+import ru.netology.moneytransferservice.logger.LoggerSimple;
 
 @Data
 public class TransferException extends RuntimeException {

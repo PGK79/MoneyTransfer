@@ -1,4 +1,4 @@
-package ru.netology.moneytransferservice.models;
+package ru.netology.moneytransferservice.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

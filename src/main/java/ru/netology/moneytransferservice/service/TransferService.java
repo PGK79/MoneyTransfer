@@ -1,15 +1,15 @@
-package ru.netology.moneytransferservice.services;
+package ru.netology.moneytransferservice.service;
 
 import org.springframework.stereotype.Service;
-import ru.netology.moneytransferservice.exceptions.ConfirmationException;
-import ru.netology.moneytransferservice.exceptions.InputDataException;
-import ru.netology.moneytransferservice.exceptions.RepositoryException;
-import ru.netology.moneytransferservice.exceptions.TransferException;
-import ru.netology.moneytransferservice.loggers.LoggerSimple;
-import ru.netology.moneytransferservice.models.Confirmer;
-import ru.netology.moneytransferservice.models.OperationIdDto;
-import ru.netology.moneytransferservice.models.Transferer;
-import ru.netology.moneytransferservice.repositories.TemporaryRepository;
+import ru.netology.moneytransferservice.exception.ConfirmationException;
+import ru.netology.moneytransferservice.exception.InputDataException;
+import ru.netology.moneytransferservice.exception.RepositoryException;
+import ru.netology.moneytransferservice.exception.TransferException;
+import ru.netology.moneytransferservice.logger.LoggerSimple;
+import ru.netology.moneytransferservice.model.Confirmer;
+import ru.netology.moneytransferservice.model.OperationIdDto;
+import ru.netology.moneytransferservice.model.Transferer;
+import ru.netology.moneytransferservice.repository.TemporaryRepository;
 
 import java.util.concurrent.atomic.AtomicInteger;
 

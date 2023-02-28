@@ -10,9 +10,9 @@ import org.springframework.http.ResponseEntity;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import ru.netology.moneytransferservice.models.Amount;
-import ru.netology.moneytransferservice.models.Confirmer;
-import ru.netology.moneytransferservice.models.Transferer;
+import ru.netology.moneytransferservice.model.Amount;
+import ru.netology.moneytransferservice.model.Confirmer;
+import ru.netology.moneytransferservice.model.Transferer;
 
 @Testcontainers
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)

@@ -1,10 +1,10 @@
-package ru.netology.moneytransferservice.controllers;
+package ru.netology.moneytransferservice.controller;
 
 import org.springframework.web.bind.annotation.*;
-import ru.netology.moneytransferservice.models.Confirmer;
-import ru.netology.moneytransferservice.models.OperationIdDto;
-import ru.netology.moneytransferservice.models.Transferer;
-import ru.netology.moneytransferservice.services.TransferService;
+import ru.netology.moneytransferservice.model.Confirmer;
+import ru.netology.moneytransferservice.model.OperationIdDto;
+import ru.netology.moneytransferservice.model.Transferer;
+import ru.netology.moneytransferservice.service.TransferService;
 
 @RestController
 public class TransferController {

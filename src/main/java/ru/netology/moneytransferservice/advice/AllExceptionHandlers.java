@@ -4,11 +4,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ru.netology.moneytransferservice.exceptions.ConfirmationException;
-import ru.netology.moneytransferservice.exceptions.InputDataException;
-import ru.netology.moneytransferservice.exceptions.RepositoryException;
-import ru.netology.moneytransferservice.exceptions.TransferException;
-import ru.netology.moneytransferservice.models.ExceptionDto;
+import ru.netology.moneytransferservice.exception.ConfirmationException;
+import ru.netology.moneytransferservice.exception.InputDataException;
+import ru.netology.moneytransferservice.exception.RepositoryException;
+import ru.netology.moneytransferservice.exception.TransferException;
+import ru.netology.moneytransferservice.model.ExceptionDto;
 
 @RestControllerAdvice
 public class AllExceptionHandlers {

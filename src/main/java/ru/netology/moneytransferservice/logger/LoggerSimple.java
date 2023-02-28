@@ -1,7 +1,7 @@
-package ru.netology.moneytransferservice.loggers;
+package ru.netology.moneytransferservice.logger;
 
 import lombok.Data;
-import ru.netology.moneytransferservice.models.Amount;
+import ru.netology.moneytransferservice.model.Amount;
 
 import java.io.BufferedWriter;
 import java.io.File;
